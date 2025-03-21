@@ -11,7 +11,16 @@ from torch import nn
 
 def visualize_patcher(img: np.array,
                       patch_size: int):
-    
+    """
+    This function visualizes how the image is divided into patches. It checks whether the image dimensions are divisible by the patch size, 
+    and then divides the image into patches, displaying them in a grid for better understanding of how the patches are created.
+
+    Args:
+    - img (np.array): Input image to be visualized.
+    - patch_size (int): The size of each patch the image will be divided into.
+
+    """
+
     height, width , _ = img.shape
 
     assert height & patch_size == 0 , f"Image Sizes must compatible with Patch size, Heigh: {height} not divisible in Patch Size: {patch_size}"
@@ -33,6 +42,16 @@ def visualize_patcher(img: np.array,
     plt.tight_layout(pad=0.2)
 
 class PatchEmbedding(nn.Module):
+    """
+    PatchEmbedding is a class responsible for converting the image into non-overlapping patches, 
+    and embedding them into a latent vector space. The patches are flattened, followed by adding position 
+    encoding to represent the spatial relationship of the patches.
+
+    Args:
+    - in_channels (int): The number of input channels for the image (typically 3 for RGB images).
+    - patch_size (int): The size of each patch that the image will be divided into.
+    - embedding_dim (int): The dimension of the embedding space, representing how large the feature vectors will be.
+    """
 
     def __init__(self,
                  in_channels: int,

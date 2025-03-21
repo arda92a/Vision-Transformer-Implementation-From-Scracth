@@ -4,6 +4,23 @@ from TransformerEncoder import TransformerEncoder
 import torch
 
 class ViT(nn.Module):
+    """
+    The ViT (Vision Transformer) class implements the Vision Transformer model.
+    It uses transformer-based architecture for image classification, where the image is first split into patches,
+    and each patch is processed as a sequence of tokens by the transformer.
+
+    Args:
+    - img_size (int): Size of the input image (e.g., 224).
+    - in_channels (int): Number of input channels (e.g., 3 for RGB images).
+    - patch_size (int): Size of each patch to split the image into (e.g., 16).
+    - embedding_dim (int): The size of the embedding for each patch (e.g., 768).
+    - num_transformer_layers (int): Number of transformer encoder layers (e.g., 12).
+    - num_heads (int): Number of attention heads in the multi-head attention block (e.g., 12).
+    - attn_dropout (float): Dropout rate for the attention mechanism.
+    - mlp_size (int): The size of the hidden layer in the multi-layer perceptron (MLP) of the transformer.
+    - mlp_dropout (float): Dropout rate for the MLP in the transformer.
+    - num_classes (int): The number of output classes for the classification task (e.g., 1000).
+    """
 
     def __init__(self,
                  img_size: int = 224,
@@ -23,7 +40,7 @@ class ViT(nn.Module):
 
         self.patch_number = (img_size**2)//(patch_size**2)
 
-        self.class_embedding = nn.Parameter(torch.ones((1,1,embedding_dim)),
+        self.class_embedding = nn.Parameter(torch.randn((1,1,embedding_dim)),
                                             requires_grad=True)
         
         self.positional_embedding = nn.Parameter(torch.randn(1,self.patch_number+1,embedding_dim),

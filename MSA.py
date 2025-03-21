@@ -1,6 +1,16 @@
 from torch import nn
 
 class MultiHeadSelfAttentionBlock(nn.Module):
+    """
+    The MultiHeadSelfAttentionBlock class implements the multi-head self-attention mechanism found in transformer models.
+    This layer allows the model to simultaneously consider the relationships between all elements of the input data, 
+    learning important features and generating a higher-level representation.
+
+    Args:
+    - embedding_dim (int): The size of each input vector (e.g., 768), determining the embedding dimension of the model.
+    - num_heads (int): The number of attention heads, i.e., how many different attention mechanisms will be run in parallel.
+    - dropout (float): The dropout rate for the attention layer. Helps prevent overfitting by randomly zeroing out weights.
+    """
 
     def __init__(self,
                  embedding_dim:int = 768,
