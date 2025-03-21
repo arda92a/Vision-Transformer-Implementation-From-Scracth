@@ -1,4 +1,6 @@
+import unittest
 from torch import nn
+import torch
 from MSA import MultiHeadSelfAttentionBlock
 from MLP import MultipLayerPerceptron
 
@@ -39,3 +41,74 @@ class TransformerEncoder(nn.Module):
         x = self.mlp_block(x) + x
 
         return x
+
+class TestTransformerEncoder(unittest.TestCase):
+    """
+    This test class verifies the functionality of the TransformerEncoder class.
+    It checks if the output shape is correct and if residual connections work properly.
+    """
+
+    def test_transformer_encoder_output_shape(self):
+        """
+        Test if the output shape of the TransformerEncoder is correct.
+        """
+        # Define input parameters
+        embedding_dim = 768
+        num_heads = 12
+        attn_dropout = 0.1
+        mlp_size = 3072
+        mlp_dropout = 0.1
+        batch_size = 4
+        seq_len = 10  # Number of tokens in the sequence
+
+        # Create a random input tensor (batch_size, seq_len, embedding_dim)
+        x = torch.randn(batch_size, seq_len, embedding_dim)
+
+        # Initialize TransformerEncoder
+        encoder = TransformerEncoder(embedding_dim=embedding_dim,
+                                     num_heads=num_heads,
+                                     attn_dropout=attn_dropout,
+                                     mlp_size=mlp_size,
+                                     mlp_dropout=mlp_dropout)
+
+        # Forward pass
+        output = encoder(x)
+
+        # Check if output shape is correct
+        expected_output_shape = (batch_size, seq_len, embedding_dim)
+        self.assertEqual(output.shape, expected_output_shape, 
+                         f"Expected shape {expected_output_shape}, but got {output.shape}")
+
+        # Print success message
+        print("Test 'test_transformer_encoder_output_shape' passed!")
+
+    def test_transformer_encoder_residual_connection(self):
+        """
+        Test if the residual connection is properly applied.
+        """
+        embedding_dim = 768
+        num_heads = 12
+        attn_dropout = 0.1
+        mlp_size = 3072
+        mlp_dropout = 0.1
+        batch_size = 4
+        seq_len = 10  # Number of tokens in the sequence
+
+        # Create a random input tensor
+        x = torch.randn(batch_size, seq_len, embedding_dim)
+
+        # Initialize TransformerEncoder
+        encoder = TransformerEncoder(embedding_dim=embedding_dim,
+                                     num_heads=num_heads,
+                                     attn_dropout=attn_dropout,
+                                     mlp_size=mlp_size,
+                                     mlp_dropout=mlp_dropout)
+
+        # Forward pass
+        output = encoder(x)
+
+        # Check if residual connection was applied by ensuring output is not identical to x
+        self.assertFalse(torch.equal(x, output), "Residual connection might not be applied correctly.")
+
+        # Print success message
+        print("Test 'test_transformer_encoder_residual_connection' passed!")
