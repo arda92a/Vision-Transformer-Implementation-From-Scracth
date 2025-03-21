@@ -38,12 +38,15 @@ class PatchEmbedding(nn.Module):
                  in_channels: int,
                  patch_size: int,
                  embedding_dim: int):
+        
         super().__init__()
+        self.patch_size = patch_size
 
         self.conv_layer = nn.Conv2d(in_channels=in_channels,
                                     out_channels=embedding_dim,
                                     stride=patch_size,
-                                    kernel_size=patch_size)
+                                    kernel_size=patch_size,
+                                    padding=0)
         
         self.flatten_layer = nn.Flatten(start_dim=2,
                                         end_dim=3)
