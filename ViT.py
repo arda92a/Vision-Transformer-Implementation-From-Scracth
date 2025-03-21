@@ -36,7 +36,7 @@ class ViT(nn.Module):
                                               embedding_dim=embedding_dim)
         
         self.transformer_encoder = nn.Sequential(*[
-                TransformerEncoder(embedded_dim=embedding_dim,
+                TransformerEncoder(embedding_dim=embedding_dim,
                                    num_heads=num_heads,
                                    attn_dropout=attn_dropout,
                                    mlp_size=mlp_size,
