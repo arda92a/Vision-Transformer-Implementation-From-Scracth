@@ -5,7 +5,10 @@ from torch import optim
 from Models.ViT import ViT
 from Utils.train import train_pure,train_step_WithGradientClipping,create_scheduler,train_with_scheduler
 from Utils.helper_functions import save_loss_curves,save_results_as_json,save_model
+import random
 
+torch.manual_seed(42)
+random.seed(42)
 DATASET_PATH = "Data/Garbage classification"
 TRAIN_RATIO = 0.8
 BATCH_SIZE = 32
@@ -14,6 +17,10 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 PATCH_SIZE = 16
 IN_CHANNELS = 3
 EPOCHS = 10
+SEED = 42
+
+torch.manual_seed(SEED)
+random.seed(SEED)
 
 print("[INFO] Training Pipeline Starting...")
 
