@@ -1,13 +1,13 @@
 import unittest
-from Patcher import TestPatchEmbedding  # Replace 'your_module' with your actual module name
-from MSA import TestMultiHeadSelfAttentionBlock
-from MLP import TestMultipLayerPerceptron
-from TransformerEncoder import TestTransformerEncoder
-from ViT import TestViT
+from Models.Patcher import TestPatchEmbedding  # Replace 'your_module' with your actual module name
+from Models.MSA import TestMultiHeadSelfAttentionBlock
+from Models.MLP import TestMultipLayerPerceptron
+from Models.TransformerEncoder import TestTransformerEncoder
+from Models.ViT import TestViT
+
 
 # Discover and run all test cases in the current directory
 def run_tests():
-    # Load tests from TestPatchEmbedding and TestVisualizePatcher
     test_suite = unittest.TestSuite()
     test_loader = unittest.TestLoader()
 
