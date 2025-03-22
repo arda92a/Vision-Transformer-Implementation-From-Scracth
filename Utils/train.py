@@ -4,6 +4,7 @@ Contains functions for training and testing a PyTorch model.
 import torch
 from tqdm.auto import tqdm
 from typing import Dict, List, Tuple
+from torch.optim.lr_scheduler import LambdaLR, CosineAnnealingLR
 
 def train_step_pure(model: torch.nn.Module,
                dataloader: torch.utils.data.DataLoader,
@@ -336,4 +337,69 @@ def train_pure(model: torch.nn.Module,
         results["test_acc"].append(test_acc)
 
     # Return the filled results at the end of the epochs
+    return results
+
+
+def lr_lambda(current_step: int, warmup_steps: int, total_steps: int):
+    if current_step < warmup_steps:
+        return float(current_step) / float(max(1, warmup_steps))  # Linear warmup
+    progress = float(current_step - warmup_steps) / float(max(1, total_steps - warmup_steps))
+    return 0.5 * (1.0 + torch.cos(torch.tensor(progress * 3.141592653589793)))  # Cosine decay
+
+def create_scheduler(warmup_steps,
+                     train_loader,
+                     optimizer):
+    
+    total_steps = 15 * len(train_loader) 
+
+    scheduler = LambdaLR(optimizer, lr_lambda=lambda step: lr_lambda(step, warmup_steps, total_steps))
+
+    return scheduler
+
+def train_with_scheduler(model: torch.nn.Module,
+          train_dataloader: torch.utils.data.DataLoader,
+          test_dataloader: torch.utils.data.DataLoader,
+          optimizer: torch.optim.Optimizer,
+          loss_fn: torch.nn.Module,
+          epochs: int,
+          device: torch.device,
+          scheduler) -> Dict[str, List]:
+
+    results = {"train_loss": [], "train_acc": [], "test_loss": [], "test_acc": []}
+    model.to(device)
+
+    # Training loop
+    for epoch in tqdm(range(epochs)):
+        model.train()
+        train_loss, train_acc = 0, 0
+
+        for batch, (X, y) in enumerate(train_dataloader):
+            X, y = X.to(device), y.to(device)
+
+            optimizer.zero_grad()
+            y_pred = model(X)
+            loss = loss_fn(y_pred, y)
+            loss.backward()
+
+            optimizer.step()
+            scheduler.step()  # 🔥 Update learning rate
+
+            # Compute accuracy
+            y_pred_class = torch.argmax(torch.softmax(y_pred, dim=1), dim=1)
+            train_acc += (y_pred_class == y).sum().item() / len(y_pred)
+            train_loss += loss.item()
+
+        # Compute average loss and accuracy
+        train_loss /= len(train_dataloader)
+        train_acc /= len(train_dataloader)
+
+        test_loss, test_acc = test_step(model, test_dataloader, loss_fn, device)
+
+        print(f"Epoch {epoch+1}: train_loss={train_loss:.4f}, train_acc={train_acc:.4f}, test_loss={test_loss:.4f}, test_acc={test_acc:.4f}")
+
+        results["train_loss"].append(train_loss)
+        results["train_acc"].append(train_acc)
+        results["test_loss"].append(test_loss)
+        results["test_acc"].append(test_acc)
+
     return results

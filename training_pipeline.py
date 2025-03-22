@@ -3,7 +3,7 @@ import torch
 from torch import nn
 from torch import optim
 from Models.ViT import ViT
-from Utils.train import train_pure
+from Utils.train import train_pure,train_step_WithGradientClipping,create_scheduler,train_with_scheduler
 from Utils.helper_functions import save_loss_curves,save_results_as_json,save_model
 
 DATASET_PATH = "Data/Garbage classification"
@@ -71,11 +71,85 @@ save_model(model=model_pure_training,
            target_dir="Experiments/experiment_1",
            model_name="model_pure_training.pth")
 
-print("[INFO] First Experiment Finished..")
+print("[INFO] First Experiment Finished!")
 
-print("2. Experiment")
-print("Train ViT by Graient Clipping")
+print("********************************************")
 
-print("3. Experiment")
-print("Training ViT by LambdaLR scheduler that combine Warmup + Cosine Decay")
+print("2. Experiment : Train ViT by Graient Clipping")
+print("[INFO] ViT Model Creating...")
 
+model_with_gradient_clipping = ViT(img_size=IMAGE_SIZE[0], 
+                                    patch_size=PATCH_SIZE, 
+                                    in_channels=IN_CHANNELS, 
+                                    num_classes=len(classes))
+
+optimizer_GC = optim.Adam(model_with_gradient_clipping.parameters(), lr=3e-4)
+
+print("[INFO] Training Starting With Gradient Clipping...")
+
+result_with_gradient_clipping = train_step_WithGradientClipping(model=model_with_gradient_clipping,
+                                                       train_dataloader=train_loader,
+                                                       test_dataloader=test_loader,
+                                                       optimizer=optimizer_GC,
+                                                       loss_fn=criterion,
+                                                       epochs=EPOCHS,
+                                                       device=DEVICE)
+
+print("[INFO] Training with Gradient Clipping End...")
+print("[INFO] Results are saving...")
+
+save_loss_curves(results=result_with_gradient_clipping,
+                 save_path="Experiments/experiment_2/accuracy_loss_plot.png")
+
+save_results_as_json(results=result_with_gradient_clipping,
+                     save_path="Experiments/experiment_2/training_results.json")
+
+save_model(model=model_pure_training,
+           target_dir="Experiments/experiment_2",
+           model_name="model_with_gradient_clipping.pth")
+
+print("[INFO] Second Experiment Finished!")
+
+print("********************************************")
+
+print("3. Experiment : Training by LambdaLR scheduler that combine Warmup + Cosine Decay")
+print("[INFO] ViT Model Creating...")
+
+model_with_scheduler = ViT(img_size=IMAGE_SIZE[0], 
+                                    patch_size=PATCH_SIZE, 
+                                    in_channels=IN_CHANNELS, 
+                                    num_classes=len(classes))
+
+optimizer_SCH = optim.Adam(model_with_scheduler.parameters(), lr=3e-4)
+
+print("[INFO] Training Starting With Learning Rate Warmup and Cosine Decay...")
+
+scheduler = create_scheduler(warmup_steps=10000,
+                             train_loader=train_loader,
+                             optimizer=optimizer_SCH)
+
+result_with_scheduler = train_with_scheduler(model=model_with_gradient_clipping,
+                                                       train_dataloader=train_loader,
+                                                       test_dataloader=test_loader,
+                                                       optimizer=optimizer,
+                                                       loss_fn=criterion,
+                                                       epochs=EPOCHS,
+                                                       device=DEVICE,
+                                                       scheduler=scheduler)
+
+print("[INFO] Training with Learning Rate Warmup and Cosine Decay End!")
+print("[INFO] Results are saving...")
+
+save_loss_curves(results=result_with_scheduler,
+                 save_path="Experiments/experiment_3/accuracy_loss_plot.png")
+
+save_results_as_json(results=result_with_scheduler,
+                     save_path="Experiments/experiment_3/training_results.json")
+
+save_model(model=model_with_scheduler,
+           target_dir="Experiments/experiment_3",
+           model_name="model_with_scheduler.pth")
+
+print("[INFO] Third Experiment Finished!")
+
+print("********************************************")

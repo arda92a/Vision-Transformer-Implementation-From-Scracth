@@ -42,13 +42,13 @@ def save_loss_curves(results,
 
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        print(f"Plot saved to {save_path}")
+        print(f"[INFO] Plot saved to {save_path}")
     
 
 def save_results_as_json(results, save_path):
     with open(save_path, 'w') as f:
         json.dump(results, f, indent=4)
-    print(f"Results saved to {save_path}")
+    print(f"[INFO] Results saved to {save_path}")
 
 def save_model(model: torch.nn.Module,
                target_dir: str,
