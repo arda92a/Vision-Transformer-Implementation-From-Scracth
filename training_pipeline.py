@@ -3,7 +3,7 @@ import torch
 from torch import nn
 from torch import optim
 from Models.ViT import ViT
-from Utils.train import train_pure,train_step_WithGradientClipping,create_scheduler,train_with_scheduler
+from Utils.train import train_pure,train_With_Gradient_Clipping,create_scheduler,train_with_scheduler
 from Utils.helper_functions import save_loss_curves,save_results_as_json,save_model
 import random
 
@@ -94,13 +94,14 @@ optimizer_GC = optim.Adam(model_with_gradient_clipping.parameters(), lr=3e-4)
 
 print("[INFO] Training Starting With Gradient Clipping...")
 
-result_with_gradient_clipping = train_step_WithGradientClipping(model=model_with_gradient_clipping,
+result_with_gradient_clipping = train_With_Gradient_Clipping(model=model_with_gradient_clipping,
                                                        train_dataloader=train_loader,
                                                        test_dataloader=test_loader,
                                                        optimizer=optimizer_GC,
                                                        loss_fn=criterion,
                                                        epochs=EPOCHS,
                                                        device=DEVICE)
+
 
 print("[INFO] Training with Gradient Clipping End...")
 print("[INFO] Results are saving...")
