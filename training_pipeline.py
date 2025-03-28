@@ -34,11 +34,15 @@ print("********************************************")
 
 print("[INFO] Dataset Splitting into training and test...")
 # Dataset Preparation
-train_dir, test_dir = split_dataset_into_train_test(dataset_path=DATASET_PATH, train_ratio=TRAIN_RATIO)
+train_dir, test_dir = split_dataset_into_train_test(dataset_path=DATASET_PATH, 
+                                                    train_ratio=TRAIN_RATIO)
 
 print("[INFO] Dataloaders and Class Names are creating...")
 
-train_loader, test_loader, classes = create_data_loaders(train_dir, test_dir, BATCH_SIZE, IMAGE_SIZE)
+train_loader, test_loader, classes = create_data_loaders(train_dir=train_dir, 
+                                                         test_dir=test_dir, 
+                                                         batch_size=BATCH_SIZE, 
+                                                         image_size=IMAGE_SIZE)
 print("********************************************")
 
 # Training experiments
@@ -53,7 +57,11 @@ for exp_name, train_function in experiments.items():
         print(f"[INFO] Running {exp_name} experiment with {opt_name} optimizer...")
         
         # Model Initialization
-        model = ViT(img_size=IMAGE_SIZE[0], patch_size=PATCH_SIZE, in_channels=IN_CHANNELS, num_classes=len(classes))
+        model = ViT(img_size=IMAGE_SIZE[0], 
+                    patch_size=PATCH_SIZE, 
+                    in_channels=IN_CHANNELS, 
+                    num_classes=len(classes))
+        
         optimizer = opt_func(model.parameters())
         criterion = nn.CrossEntropyLoss()
         
