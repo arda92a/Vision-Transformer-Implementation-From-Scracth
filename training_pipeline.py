@@ -101,7 +101,7 @@ for exp_name, train_function in experiments.items():
             )
         
         # Save results
-        save_path = f"Experiments/{exp_name}_{opt_name}"
+        save_path = f"Experiments/{exp_name}/{opt_name}"
         save_loss_curves(results, f"{save_path}/accuracy_loss_plot.png")
         save_results_as_json(results, f"{save_path}/training_results.json")
         save_model(model, save_path, f"model_{exp_name.lower()}_{opt_name.lower()}.pth")
