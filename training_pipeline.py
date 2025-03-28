@@ -18,7 +18,7 @@ IMAGE_SIZE = (224, 224)
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 PATCH_SIZE = 16
 IN_CHANNELS = 3
-EPOCHS = 3
+EPOCHS = 15
 SEED = 42
 MAX_GRAD_NORM = 1.0
 
