@@ -29,9 +29,17 @@ OPTIMIZERS = {
     "RMSprop": lambda params: optim.RMSprop(params, lr=3e-4)
 }
 
+print("[INFO] Training Pipeline Starting...")
+print("********************************************")
+
+print("[INFO] Dataset Splitting into training and test...")
 # Dataset Preparation
 train_dir, test_dir = split_dataset_into_train_test(dataset_path=DATASET_PATH, train_ratio=TRAIN_RATIO)
+
+print("[INFO] Dataloaders and Class Names are creating...")
+
 train_loader, test_loader, classes = create_data_loaders(train_dir, test_dir, BATCH_SIZE, IMAGE_SIZE)
+print("********************************************")
 
 # Training experiments
 experiments = {
