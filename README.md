@@ -2,7 +2,7 @@
 
 This repository contains a PyTorch implementation of the Vision Transformer (ViT) model built from scratch. The project demonstrates the application of transformers to computer vision tasks, specifically for garbage classification.
 
-![Loss Curves](Experiments/Pure_Training/Adam/accuracy_loss_plot.png)
+![Loss Curves](Image/convolution_animation_rgb_with_grid.gif)
 
 ## Project Overview
 
