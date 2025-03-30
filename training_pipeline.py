@@ -48,8 +48,8 @@ print("********************************************")
 # Training experiments
 experiments = {
     "Pure_Training": train_pure,
-    "Gradient_Clipping": train_With_Gradient_Clipping,
-    "Scheduler": train_with_scheduler
+    #"Gradient_Clipping": train_With_Gradient_Clipping,
+    #"Scheduler": train_with_scheduler
 }
 
 for exp_name, train_function in experiments.items():
